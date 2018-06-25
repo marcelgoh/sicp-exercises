@@ -12,3 +12,10 @@
         ((and (list? a) (list? b))
          (and (my-equal? (car a) (car b))
               (my-equal? (cdr a) (cdr b))))))
+
+; Exercise 2.55
+; 'x is simply shorthand for (quote x) so ''x is equivalent to (quote (quote x))
+; ''abracadabra is (quote (quote abracadabra)) which is the same as
+; (quote abracadabra), the car of which is simply "quote"
+
+

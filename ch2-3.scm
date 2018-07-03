@@ -147,6 +147,11 @@
          (make-tree (entry set)
                     (left-branch set)
                     (adjoin-set x (right-branch set))))))
+(define (lookup given-key set-of-records)
+  (cond ((null? set-of-records) false)
+        ((equal? given-key (key (car set-of-records)))
+         (car set-of-records))
+        (else (lookup given-key (cdr set-of-records)))))
 ; Exercise 2.63
 (define (tree->list-1 tree)
   (if (null? tree)
@@ -166,7 +171,6 @@
 #| a. The two procedures produce the same result for each of the three trees in Fig. 2.16.
  | b. tree-list-1 is slower because it calls append which needs to cdr down the lists. 
  |#
-
 ; Exercise 2.64
 (define (list->tree elements)
   (car (partial-tree elements (length elements))))
@@ -192,7 +196,6 @@
  |    (5 (1 () (2 () ())) (9 (7 () ()) (11 () ())))
  | b. The order is proportional to the size of the list so it's O(n). 
  |#
-
 ; Exercise 2.65
 (define (t-union-set set1 set2)
   (list->tree (union-set (tree->list-2 set1) 
@@ -200,3 +203,112 @@
 (define (t-intersection-set set1 set2)
   (list->tree (intersection-set (tree->list-2 set1) 
                                 (tree->list-2 set2))))
+; Exercise 2.66
+(define (key record) (car record))
+(define (data record) (cdr record))
+(define (make-record key data) (cons key data))
+
+(define (tree-lookup given-key set-of-records)
+  (cond ((null? set-of-records) false)
+        ((equal? given-key (key (car set-of-records)))
+         (car set-of-records))
+        ((< given-key (key (car set-of-records)))
+         (tree-lookup given-key (left-branch set-of-records)))
+        ((> given-key (key (car set-of-records)))
+         (tree-lookup given-key (right-branch set-of-records)))))
+
+; HUFFMAN ENCODING Example
+(define (make-leaf symbol weight) (list 'leaf symbol weight))
+(define (leaf? object) (eq? (car object) 'leaf))
+(define (symbol-leaf x) (cadr x))
+(define (weight-leaf x) (caddr x))
+(define (make-code-tree left right)
+  (list left
+        right
+        (append (symbols left) (symbols right))
+        (+ (weight left) (weight right))))
+(define (h-left-branch tree) (car tree))
+(define (h-right-branch tree) (cadr tree))
+(define (symbols tree)
+  (if (leaf? tree)
+      (list (symbol-leaf tree))
+      (caddr tree)))
+(define (weight tree)
+  (if (leaf? tree)
+      (weight-leaf tree)
+      (cadddr tree)))
+(define (choose-branch bit branch)
+  (cond ((= bit 0) (h-left-branch branch))
+        ((= bit 1) (h-right-branch branch))
+        (else (error "bad bit: CHOOSE-BRANCH" bit))))
+(define (decode bits tree)
+  (define (decode-1 bits current-branch)
+    (if (null? bits)
+        '()
+        (let ((next-branch
+                (choose-branch (car bits) current-branch)))
+          (if (leaf? next-branch)
+              (cons (symbol-leaf next-branch)
+                    (decode-1 (cdr bits) tree))
+              (decode-1 (cdr bits) next-branch)))))
+  (decode-1 bits tree))
+(define (h-adjoin-set x set)
+  (cond ((null? set) (list x))
+        ((< (weight x) (weight (car set))) (cons x set))
+        (else (cons (car set)
+                    (h-adjoin-set x (cdr set))))))
+(define (make-leaf-set pairs)
+  (if (null? pairs)
+      '()
+      (let ((pair (car pairs)))
+        (h-adjoin-set (make-leaf (car pair)   ; symbol
+                                 (cadr pair)) ; frequency
+                      (make-leaf-set (cdr pairs))))))
+
+; Exercise 2.67
+(define sample-tree
+  (make-code-tree (make-leaf 'E 9)
+                  (make-code-tree
+                    (make-code-tree
+                      (make-leaf 'H 2)
+                      (make-code-tree 
+                        (make-leaf 'N 1)
+                        (make-leaf 'V 1)))
+                    (make-code-tree
+                      (make-leaf 'T 2)
+                      (make-code-tree
+                        (make-leaf 'O 1)
+                        (make-leaf 'B 1))))))
+(define sample-message '(1 1 1 1 0 0 1 1 0 1 0 0 1 1 1 0 1 0 1 1 0 1 0 1 0))
+; NB: I did not use the same sample-tree and sample-message as the book.
+; Exercise 2.68
+(define (encode-symbol symbol tree)
+  (if (not (memq symbol (symbols tree)))
+      (error "not found: SYMBOL" symbol)
+      (cond ((leaf? tree) '())
+            ((memq symbol (symbols (h-left-branch tree)))
+             (cons 0 (encode-symbol symbol (h-left-branch tree))))
+            ((memq symbol (symbols (h-right-branch tree)))
+             (cons 1 (encode-symbol symbol (h-right-branch tree)))))))
+(define (encode message tree)
+  (if (null? message)
+      '()
+      (append (encode-symbol (car message) tree)
+              (encode (cdr message) tree))))
+; TEST: (encode '(b e e t h o v e n) sample-tree) should print sample-message.
+; Exercise 2.69
+(define (successive-merge leaf-set)
+  (cond ((null? leaf-set) '())
+        ((null? (cdr leaf-set)) (car leaf-set))
+        (else (successive-merge (h-adjoin-set (make-code-tree (car leaf-set) (cadr leaf-set))
+                                              (cddr leaf-set))))))
+(define (generate-huffman-tree pairs)
+  (successive-merge (make-leaf-set pairs)))
+; Exercise 2.70
+(define rock-freqs '((NA 16) (YIP 9) (SHA 3) (A 2) (GET 2) (JOB 2) (BOOM 1) (WAH 1)))
+(define rock-msg (append '(GET A JOB SHA NA NA NA NA NA NA NA NA GET A JOB SHA NA NA NA NA NA NA NA NA)
+                         '(WAH YIP YIP YIP YIP YIP YIP YIP YIP YIP SHA BOOM)))
+; The song requires 84 bits to encode. If we use a fixed-length code it would take 36*lg8 = 108 bits.
+; Exercise 2.71: Most frequent letter: 1 bit. Least frequent letter: n-1 bits.
+; Exercise 2.72: (encode-symbol) has a linear best-case and quadratic worst-case time, owing to the
+;                fact that memq is linear.

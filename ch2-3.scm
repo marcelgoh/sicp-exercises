@@ -26,7 +26,7 @@
 (define (sum? x) (and (pair? x) (eq? (car x) '+)))
 (define (product? x) (and (pair? x) (eq? (car x) '*)))
 ; Exercise 2.56 (Part 1)
-(define (make-exponentiation b e) 
+(define (make-exponentiation b e)
   (cond ((=number? e 0) 1)
         ((=number? e 1) b)
         (else (list '** b e))))
@@ -36,12 +36,12 @@
 ; (End 2.56 Part 1)
 ; Exercise 2.57
 (define (addend s) (cadr s))
-(define (augend s) 
+(define (augend s)
   (if (null? (cdddr s))
       (caddr s)
       (cons '+ (cddr s))))
 (define (multiplier p) (cadr p))
-(define (multiplicand p) 
+(define (multiplicand p)
   (if (null? (cdddr p))
       (caddr p)
       (cons '* (cddr p))))
@@ -71,7 +71,7 @@
         ; Exercise 2.56 (Part 2)
         ((exponentiation? exp)
          (make-product (make-product (exponent exp)
-                                     (make-exponentiation (base exp) 
+                                     (make-exponentiation (base exp)
                                                           (- (exponent exp) 1)))
                        (deriv (base exp) var)))
         ; (End 2.56 Part 2)
@@ -102,14 +102,14 @@
       (cons (car set) (adjoin-set x (cdr set)))))
 ; Exercise 2.59
 (define (unordered-union-set set1 set2)
-  (if (null? set1) 
+  (if (null? set1)
       set2
       (unordered-union-set (cdr set1) (adjoin-set (car set1) set2))))
 #| Exercise 2.60: element-of-set? would remain the same, adjoin-set would become a simple (cons x set),
  |                intersection-set would remain the same, union-set would become (append set1 set2).
  |                element-of-set? (and consequently intersection-set) might become slightly slower because the 
  |                lists are larger but adjoin-set and union-set become much faster. This representation
- |                might be useful if computation is precious but space is abundant. 
+ |                might be useful if computation is precious but space is abundant.
  |#
 ; Exercise 2.62
 (define (union-set set1 set2)
@@ -194,14 +194,14 @@
 #| a. partial-tree finds the approximate centre of the list, sets it as the entry, then recursively
  |    calls partial-tree on the left side and right side on the centre to create the branches.
  |    (5 (1 () (2 () ())) (9 (7 () ()) (11 () ())))
- | b. The order is proportional to the size of the list so it's O(n). 
+ | b. The order is proportional to the size of the list so it's O(n).
  |#
 ; Exercise 2.65
 (define (t-union-set set1 set2)
-  (list->tree (union-set (tree->list-2 set1) 
+  (list->tree (union-set (tree->list-2 set1)
                          (tree->list-2 set2))))
 (define (t-intersection-set set1 set2)
-  (list->tree (intersection-set (tree->list-2 set1) 
+  (list->tree (intersection-set (tree->list-2 set1)
                                 (tree->list-2 set2))))
 ; Exercise 2.66
 (define (key record) (car record))
@@ -271,7 +271,7 @@
                   (make-code-tree
                     (make-code-tree
                       (make-leaf 'H 2)
-                      (make-code-tree 
+                      (make-code-tree
                         (make-leaf 'N 1)
                         (make-leaf 'V 1)))
                     (make-code-tree

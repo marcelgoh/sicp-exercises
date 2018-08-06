@@ -164,7 +164,7 @@ Written by Marcel Goh
 (define (integral f a b dx)
   (* (sum f
           (+ a (/ dx 2.0))
-          (lambda (x) (+ x dx)) 
+          (lambda (x) (+ x dx))
           b)
      dx))
 
@@ -196,7 +196,7 @@ Written by Marcel Goh
        (product term (next a) next b))))
 
 ; FIXED POINT EXAMPLES
-(define tolerance 0.00001) 
+(define tolerance 0.00001)
 (define dx 0.00001)
 
 (define (average-damp f)
@@ -219,7 +219,7 @@ Written by Marcel Goh
                      (lambda (x) (f x))))
 
 (define (sqrt x)
-  ((fixed-point (average-damp (lambda (y) (/ x y)))) 
+  ((fixed-point (average-damp (lambda (y) (/ x y))))
   1.0))
 ; END
 

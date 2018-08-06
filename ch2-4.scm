@@ -9,7 +9,7 @@
 (define (get op type)
   (hash-table/get *op-table* (list op type) '()))
 
-; complex number example
+; tagged data
 (define (attach-tag type-tag contents)
   (cons type-tag contents))
 (define (type-tag datum)

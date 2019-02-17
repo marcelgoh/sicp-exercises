@@ -241,3 +241,72 @@ And here are the definitions of these structures in code:
     (set-car! (last-pair y) y)
     y))
 ```
+## Exercise 3.20
+
+First calling `(define x (cons 1 2))`:
+
+```
+           +--------------------------------------------------+
+           | cons: --------------------+                      |
+global --> | car: ...                  |                      |
+env        | cdr: ...                  |                      |
+           | set-car!: ...             |                      |
+           | set-cdr!: ...             |                      |
+           | x: -----------------------+---------+            |
+           +---------------------------+---------+------------+
+parameters: x, y                       V     A   |   A
+body: (define set-x! ...)           --- ---  |   |   |
+      (define set-y! ...)    <-----+-0 | 0-+-+   |   |
+      (define dispatch ...)         --- ---      |   |
+                                                 |   |
+             +-----------------------------------+   |
+             |                                       |
+             V        +-----------------+            |
+          --- ---     |   x: 1          | -----------+
+         | 0 | 0-+--> |   y: 2          | <- E1 (define x (cons 1 2))
+          -+- ---     ||- set-x!:       |
+           |          ||  set-y!: ------+--+
+           |          ||  dispatch: ... |  |
+           V          ++----------------+  |
+parameters: m          |    A         A----+-+
+body: (cond ...)       +--+ |              V |
+                          | |           --- -+-
+                          V |          | 0 | 0 |
+                       --- -+-          -+- ---
+parameters: v     <---+-0 | 0 |          +------> parameters: v
+body: (set! x v)       --- ---                    body: (set! y v)
+```
+
+Now creating `z` and calling `(set-car! (cdr z) 17)`:
+
+```
+global env:
++------------------------+
+| <other vars>           |
+| x ---------------------+--> <proc with body of dispatch and pointer to E1>
+| z ---------------------+--> <proc with body of dispatch and pointer to E2>
++------------------------+
+             A         A--------------+
+E1:          |              E2:       |
++--------------------+     +--------------------+
+| x: 1 (becomes 17)  |     | x: x               |
+| y: 2               |     | y: x               |
+| <other procedures> |     | <other procedures> |
++--------------------+     +--------------------+
+          A                           A
+          |                           |
+          |                     E3:   |
+          |                     +---------+         evaluating (cdr z)
+          |                     | m: 'cdr |  -----> returns the variable x
+   E4:    |                     +---------+         in the global env
+   +--------------+
+   | m: 'set-car! | <---- calling set-car! on (cdr z) = x,
+   +--------------+
+        A
+   E5:  |
+   +-------+
+   | v: 17 | <------ calling set-x! with v = 17
+   +-------+
+```
+
+This calls `(set x 17)` which changes the value of `x` in the environment `E1`. So calling `(car x)` in the global environment will return `17` (because `x` in the global environment points to `E1`).

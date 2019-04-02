@@ -138,3 +138,32 @@
   (if (empty-deque? deque)
       (error "Empty deque: REAR-DELETE-DEQUE!" deque)
       (set-cdr! deque (before-node (cdr deque)))))
+
+; Exercise 3.24
+(define (make-table same-key?)
+  (let ((local-table (list '*table*)))
+    (define (assoc key)
+      (define (iter r)
+        (cond ((null? r) false)
+              ((same-key? key (caar r)) (car r))
+              (else (iter (cdr r)))))
+      (let ((records (cdr local-table)))
+        (iter records)))
+    (define (lookup key)
+      (let ((record (assoc key)))
+        (if record
+            (cdr record)
+            false)))
+    (define (insert! key value)
+      (let ((record (assoc key)))
+        (if record
+            (set-cdr! record value)
+            (set-cdr! local-table
+                      (cons (cons key value)
+                            (cdr local-table))))))
+    (define (dispatch m)
+      (cond ((eq? m 'lookup) lookup)
+            ((eq? m 'insert!) insert!)
+            (else (error "Unknown operation: TABLE" m))))
+    dispatch))
+

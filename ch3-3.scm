@@ -142,7 +142,8 @@
 ; Exercise 3.24
 (define (make-table same-key?)
   (let ((local-table (list '*table*)))
-    (define (assoc key)
+    (define (my-assoc key)
+      ; iterate through the list of key-value pairs
       (define (iter r)
         (cond ((null? r) false)
               ((same-key? key (caar r)) (car r))
@@ -150,12 +151,12 @@
       (let ((records (cdr local-table)))
         (iter records)))
     (define (lookup key)
-      (let ((record (assoc key)))
+      (let ((record (my-assoc key)))
         (if record
             (cdr record)
             false)))
     (define (insert! key value)
-      (let ((record (assoc key)))
+      (let ((record (my-assoc key)))
         (if record
             (set-cdr! record value)
             (set-cdr! local-table
@@ -166,4 +167,3 @@
             ((eq? m 'insert!) insert!)
             (else (error "Unknown operation: TABLE" m))))
     dispatch))
-

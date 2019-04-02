@@ -310,3 +310,15 @@ E1:          |              E2:       |
 ```
 
 This calls `(set x 17)` which changes the value of `x` in the environment `E1`. So calling `(car x)` in the global environment will return `17` (because `x` in the global environment points to `E1`).
+
+## Exercise 3.25
+
+Using `equal?`, simply pass the list as the key to the table we built in Exercise 3.24, because `equal?` can compare list structures.
+
+## Exercise 3.26
+
+Instead of the dummy record pointing to a linked list as a backbone, it should point to the root of a binary search tree like we made in Exercise 2.66.
+
+## Exercise 3.27
+
+The computation is done in an environment where a table with previously computed values is stored. This takes n steps because we note that the computation will be done once for every value from 0 to n. But for all other times the value of `(fib i)` is needed, it is looked up, which if we use an efficient representation of tables like in Exercise 3.26, takes time proportional to `log(n)`, so the actual running time will be something to the order of `n log(n)`. The function will not work if we memoized `fib`, because `fib` calls itself recursively.

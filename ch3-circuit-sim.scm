@@ -1,5 +1,5 @@
-#| Solutions to exercises in Section 3.3.4 and 3.3.5 in SICP,
- | which simulates digital circuits
+#| Solutions to exercises in Section 3.3.4 in SICP,
+ | which simulate digital circuits
  | Requires loading ch3-3.scm as well in order to work properly.
  |#
 

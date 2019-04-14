@@ -1,6 +1,6 @@
 # SICP Chapter 3 Written Solutions
 
-Some written solutions to exercises in Chapter 3 of SICP. Written by Marcel Goh and last updated on 11 February 2019.
+Some written solutions to exercises in Chapter 3 of SICP. Written by Marcel Goh and last updated on 14 April 2019.
 
 ## Exercise 3.9
 

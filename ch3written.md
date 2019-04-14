@@ -322,3 +322,11 @@ Instead of the dummy record pointing to a linked list as a backbone, it should p
 ## Exercise 3.27
 
 The computation is done in an environment where a table with previously computed values is stored. This takes n steps because we note that the computation will be done once for every value from 0 to n. But for all other times the value of `(fib i)` is needed, it is looked up, which if we use an efficient representation of tables like in Exercise 3.26, takes time proportional to `log(n)`, so the actual running time will be something to the order of `n log(n)`. The function will not work if we memoized `fib`, because `fib` calls itself recursively.
+
+## Exercise 3.31
+
+If we don't run the procedure immediately after adding it to a wire, it's operation isn't added to the agenda. This means that the signal isn't being held at the wire and during propagation, the initial signal at each wire won't be known.
+
+## Exercise 3.32
+
+This order must be used because each transition takes a small amount of time and the gate would emit the incorrect signal for a moment.

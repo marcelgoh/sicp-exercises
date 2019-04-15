@@ -330,3 +330,7 @@ If we don't run the procedure immediately after adding it to a wire, it's operat
 ## Exercise 3.32
 
 This order must be used because each transition takes a small amount of time and the gate would emit the incorrect signal for a moment.
+
+## Exercise 3.34
+
+The multiplier is designed to work when two out of the three connectors have values. So when two of the three connectors are connected to `a`, it will only work one way. Setting `a` to a value in the squarer will fire two inputs in the squarer and `b` will get a value. However, setting `b` to a value will only send one input to the squarer so it will never figure out the square root.

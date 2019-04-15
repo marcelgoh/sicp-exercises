@@ -111,7 +111,7 @@
   ((connector 'connect) new-constraint))
 
 (define (make-connector)
-  (let ((value false) (informant false) (constraints '()))
+  (let ((value #f) (informant #f) (constraints '()))
     (define (set-my-value newval setter)
       (cond ((not (has-value? me))
              (set! value newval)
@@ -124,7 +124,7 @@
             (else 'ignored)))
     (define (forget-my-value retractor)
       (if (eq? retractor informant)
-          (begin (set! informant false)
+          (begin (set! informant #f)
                  (for-each-except retractor
                                   inform-about-no-value
                                   constraints))
@@ -138,7 +138,7 @@
       'done)
     (define (me request)
       (cond ((eq? request 'has-value?)
-             (if informant true false))
+             (if informant #t #f))
             ((eq? request 'value) value)
             ((eq? request 'set-value!) set-my-value)
             ((eq? request 'forget) forget-my-value)
@@ -164,5 +164,36 @@
     (constant 32 y)
     'ok))
 
+(define A (make-connector))
+(define B (make-connector))
 
+; Exercise 3.33: c is the average of a and b
+(define (averager a b c)
+  (let ((u (make-connector))
+        (v (make-connector)))
+    (multiplier c u v)
+    (adder a b v)
+    (constant 2 u)
+    'ok))
 
+; Exercise 3.35
+(define (squarer a b)
+  (define (process-new-value)
+    (if (has-value? b)
+        (if (< (get-value b) 0)
+            (error "square less than 0: SQUARER"
+                   (get-value b))
+            (set-value! a (sqrt (get-value b)) me))
+        (if (has-value? a)
+            (set-value! b (* (get-value a) (get-value a)) me))))
+  (define (process-forget-value)
+    (forget-value! a me)
+    (forget-value! b me)
+    (process-new-value))
+  (define (me request)
+    (cond ((eq? request 'I-have-a-value) (process-new-value))
+          ((eq? request 'I-lost-my-value) (process-forget-value))
+          (else (error "Unknown request: SQUARER" request))))
+  (connect a me)
+  (connect b me)
+  me)

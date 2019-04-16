@@ -1,6 +1,6 @@
 # SICP Chapter 3 Written Solutions
 
-Some written solutions to exercises in Chapter 3 of SICP. Written by Marcel Goh and last updated on 15 April 2019.
+Some written solutions to exercises in Chapter 3 of SICP. Written by Marcel Goh and last updated on 16 April 2019.
 
 ### Exercise 3.9
 
@@ -356,3 +356,19 @@ Because just accessing the balance does not affect any other process, leaving it
 
 This is a safe change to make. Serializing before or after the call still performs the same serialized procedure.
 
+### Exercise 3.43
+
+If each process is run sequentially, each process will be able to run uninterrupted and since all a process can do is switch two balances, they will always be $10, $20, and $30 in some order. Now if they're allowed to run concurrently, there might be some fouling up of the values, but the sum will still be $60 in total. This is because each process simply calculates the difference it needs to add/subtract from the accounts. Even if they're done in some weird order, every process has a net zero impact on the total sum of the accounts.  
+If the processes themselves are not serialized, then anything goes, like we saw back in Exercise 3.38
+
+### Exercise 3.44
+
+There should not be a problem. Because the `transfer` procedure only transfers if there is enough money in `from-account`, the balances will be correct eventually, even if some interruption happens. (Sort of how real bank transfers may have a delay but all transactions will be resolved, given some time.)
+
+### Exercise 3.45
+
+`Serialized-exchange` creates two serializers before calling `withdraw`/`deposit` but since these two functions are now trying to serialize as well, the procedure will get stuck.
+
+### Exercise 3.46
+
+Say two processes, P1 and P2 are trying to acquire a mutex that is set to false. P1 checks the value and sees that it is false, so it starts to send the `'acquire` message. However, if P2 accesses the mutex at this point, before P1 is done acquiring the mutex, then P2 will see the `false` stored in the cell and proceed as well. Thus the mutex has failed. To avoid this, the testing and setting must be done all at once, without interruption.

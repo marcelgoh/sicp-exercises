@@ -2,7 +2,7 @@
 
 Some written solutions to exercises in Chapter 3 of SICP. Written by Marcel Goh and last updated on 15 April 2019.
 
-## Exercise 3.9
+### Exercise 3.9
 
 Recursive version:
 
@@ -46,7 +46,7 @@ env        |                                                        |
                                        max-count))                         max-count))
 ```
 
-## Exercise 3.10
+### Exercise 3.10
 
 ```
            +--------------------------------------------------+
@@ -80,7 +80,7 @@ env        | +- W1:    |                                      |
                 +-------------+             +--------------+
 ```
 
-## Exercise 3.11
+### Exercise 3.11
 
 Environment structure of interactions with `acc`:
 
@@ -148,11 +148,11 @@ body: ...                V                     | V
               <E1 after withdrawal>                 E2
 ```
 
-## Exercise 3.12
+### Exercise 3.12
 
 The responses are `(b)` and `(b c d)` respectively. The `append` function does not mutate `x`, so the `cdr` of `x` remains `(b)` as it was when `x` was originally defined. However, calling `append!` does mutate the `cdr` of `x` by attaching the whole of `y` onto it, so `(cdr x)` now returns `(b c d)`.
 
-## Exercise 3.13
+### Exercise 3.13
 
 ```
           +----------------------------------+
@@ -167,11 +167,11 @@ z: ---> | 0 | 0-+--> | 0 | 0-+--> | 0 | 0 -+-+
 
 Trying to compute `(last-pair z)` results in an infinite loop as the pointers are followed round-and-round.
 
-## Exercise 3.14
+### Exercise 3.14
 
 The function `mystery` reverses a list destructively. To save space, I won't draw the diagrams, but `v` before the call is `(a b c d)`. After the call, `v` is simply `(a)` and `w` is `(d c b a)`.
 
-## Exercise 3.15
+### Exercise 3.15
 
 After calling `(set-to-wow! z1)` and `(set-to-wow! z2)` we have the following pointer diagrams:
 
@@ -193,7 +193,7 @@ z1 ---> | 0 | 0-|---> | 0 | / |  |          |    'a            'b
                                 --- ---       --- ---
 ```
 
-## Exercise 3.16
+### Exercise 3.16
 
 Here are the box-and pointer diagrams:
 
@@ -241,7 +241,7 @@ And here are the definitions of these structures in code:
     (set-car! (last-pair y) y)
     y))
 ```
-## Exercise 3.20
+### Exercise 3.20
 
 First calling `(define x (cons 1 2))`:
 
@@ -311,26 +311,48 @@ E1:          |              E2:       |
 
 This calls `(set x 17)` which changes the value of `x` in the environment `E1`. So calling `(car x)` in the global environment will return `17` (because `x` in the global environment points to `E1`).
 
-## Exercise 3.25
+### Exercise 3.25
 
 Using `equal?`, simply pass the list as the key to the table we built in Exercise 3.24, because `equal?` can compare list structures.
 
-## Exercise 3.26
+### Exercise 3.26
 
 Instead of the dummy record pointing to a linked list as a backbone, it should point to the root of a binary search tree like we made in Exercise 2.66.
 
-## Exercise 3.27
+### Exercise 3.27
 
 The computation is done in an environment where a table with previously computed values is stored. This takes n steps because we note that the computation will be done once for every value from 0 to n. But for all other times the value of `(fib i)` is needed, it is looked up, which if we use an efficient representation of tables like in Exercise 3.26, takes time proportional to `log(n)`, so the actual running time will be something to the order of `n log(n)`. The function will not work if we memoized `fib`, because `fib` calls itself recursively.
 
-## Exercise 3.31
+### Exercise 3.31
 
 If we don't run the procedure immediately after adding it to a wire, it's operation isn't added to the agenda. This means that the signal isn't being held at the wire and during propagation, the initial signal at each wire won't be known.
 
-## Exercise 3.32
+### Exercise 3.32
 
 This order must be used because each transition takes a small amount of time and the gate would emit the incorrect signal for a moment.
 
-## Exercise 3.34
+### Exercise 3.34
 
 The multiplier is designed to work when two out of the three connectors have values. So when two of the three connectors are connected to `a`, it will only work one way. Setting `a` to a value in the squarer will fire two inputs in the multiplier and `b` will get a value. However, setting `b` to a value will only send one input to the multiplier so it will never figure out the square root.
+
+### Exercise 3.38
+
++ The sequences (Peter, Paul, Mary), and (Paul, Peter, Mary) both leave $45 in the account. The sequences (Mary, Peter, Paul) and (Mary, Paul, Peter) both leave $40 in the account. Then sequence (Paul, Mary, Peter) leaves $50 in the account and (Peter, Mary, Paul) leaves $35.
++ I won't draw the diagram, but, for example, in the sequence (Peter, Mary, Paul), if Peter and Mary both access the balance when it is at $100 and then perform their operations separately, Peter will arrive at $110 but Mary will calculate $100/2 = $50.
+
+### Exercise 3.39
+
+Here we're not completely serializing the computations. So we can still get 101, 121, 100, or 11, depending on the timing of the events. The only possibility that is ruled out is that P2 access the value of `x` between the two accesses of `x` in `(* x x)`, because the entirety of P1's computation has been serialized.
+
+### Exercise 3.40
+
+After serializing, the squaring and cubing can happen in either order, but no matter what, the answer is 1000000.
+
+### Exercise 3.41
+
+Because just accessing the balance does not affect any other process, leaving it unserialized is perfectly fine. It only makes sense to serialize processes that can affect the world (for example, accessing the balance _within_ the withdraw or deposit procedures).
+
+### Exercise 3.42
+
+This is a safe change to make. Serializing before or after the call still performs the same serialized procedure.
+

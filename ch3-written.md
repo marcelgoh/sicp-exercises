@@ -372,3 +372,7 @@ There should not be a problem. Because the `transfer` procedure only transfers i
 ### Exercise 3.46
 
 Say two processes, P1 and P2 are trying to acquire a mutex that is set to false. P1 checks the value and sees that it is false, so it starts to send the `'acquire` message. However, if P2 accesses the mutex at this point, before P1 is done acquiring the mutex, then P2 will see the `false` stored in the cell and proceed as well. Thus the mutex has failed. To avoid this, the testing and setting must be done all at once, without interruption.
+
+### Exercise 3.49
+
+Consider accessing the account with the highest balance in the database of accounts. You would have to have access to the accounts to know which account to access, making this mechanism unsuitable.
